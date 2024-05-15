@@ -1,0 +1,12 @@
+{
+  "name": "my_electron_app",
+  "productName": "Photo Editor",
+  "version": "1.0.0",
+  "description": "Photo editor electron desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Ritika Shrestha",
+  "license": "ISC"
+}
