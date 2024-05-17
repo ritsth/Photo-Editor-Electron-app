@@ -9,7 +9,12 @@ function createMainWindow() {
     const mainWindow = new BrowserWindow({
         titile: 'Photo Editor ',
         width: isDev? 1000: 500,
-        height: 800
+        height: 800,
+        webPrefrences: {
+            contextIsolation: true,
+            nodeIntegration: true,
+            preload: path.join(__dirname,'preload.js')
+        }
     });
 
     //Since electron used chromium under the hood we can you dev tool (inspect)
