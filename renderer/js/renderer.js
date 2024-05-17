@@ -7,15 +7,15 @@ const widthInput = document.querySelector('#width');
 
 function loadImage(e) {
     const file= e.target.files[0];
-    console.log(file.path);
 
     if (!isImg(file)){
-        console.log("Please select a Image");
+        alertError("Please select a Image");
         return;
     }else{
-        console.log('sucess')
+        alertSucess('sucess');
     }
 
+    //displaying the hidden form
     form.style.display = 'block';
 
     // Add original height and width to form using the URL API
@@ -25,8 +25,45 @@ function loadImage(e) {
         widthInput.value = this.width;
         heightInput.value = this.height;
     }
+    console.log(os.homedir());
 
-    outputPath.innerText= file.path;
+    outputPath.innerText= path.join(os.homedir(),'Downloads','Resized_img');
+
+}
+
+//send data to main
+function sendImage(e){
+    //for submit form type so it does get reloaded
+    e.preventDefault();
+
+    const width = widthInput.value;
+    const height = heightInput.value;
+    const imgpath = img.files[0].path;
+
+    if(!img.files[0]){
+        alertError('please upload image');
+        return;
+    }
+    if (width === '' || height === ''){
+        alertError('Input height and width please');
+        return;
+    }
+
+    //Send to main using ipcrenderer
+    //ipcRenderer.send('#event_name'
+    ipcRenderer.send('image:resize',{
+        imgpath,
+        width,
+        height,
+    });
+
+    console.log("img send");
+
+    //Catch the image:done event
+    ipcRenderer.on('image:Resized', () =>{
+        alertSucess('Image resized sucessfully');
+    });
+
 
 }
 
@@ -36,13 +73,31 @@ function isImg(file){
     return file && acceptingImgTypes.includes(file['type']);
 }
 
+function alertError(message){
+    Toastify.toast({
+        text: message,
+        duration: 5000,
+        close: false,
+        style: {
+            background: 'red',
+            color: "white",
+        }
+    })
+}
 
-function ResizeImage(e){
-    e.preventDefault();
-
-    console.log(heightInput.value);
+function alertSucess(message){
+    Toastify.toast({
+        text: message,
+        duration: 5000,
+        close: false,
+        style: {
+            background: 'green',
+            color: "white",
+        }
+    })
 }
 
 
+
 img.addEventListener('change',loadImage);
-form.addEventListener('submit', ResizeImage);
+form.addEventListener('submit', sendImage);

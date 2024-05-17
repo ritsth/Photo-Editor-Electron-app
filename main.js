@@ -1,20 +1,25 @@
 const path = require('path');
-const {app, BrowserWindow, Menu} = require('electron');
+const os = require('os');
+const fs = require('fs');
+const resizeImg = require('resize-img')
+const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron');
 
 //return true if the platform is macOS
 const isMac = process.platform === 'darwin';
 const isDev = process.env.NODE_ENV !== 'production';
 
+let mainWindow;
+
 function createMainWindow() {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         titile: 'Photo Editor ',
         width: isDev? 1000: 500,
         height: 800,
-        webPrefrences: {
-            contextIsolation: true,
+        webPreferences: {
             nodeIntegration: true,
-            preload: path.join(__dirname,'preload.js')
-        }
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
+        },
     });
 
     //Since electron used chromium under the hood we can you dev tool (inspect)
@@ -22,10 +27,6 @@ function createMainWindow() {
     if (isDev){
         mainWindow.webContents.openDevTools();
     }
-
-    //Implement Custom menu
-    const mainMenu= Menu.buildFromTemplate(menu);
-    Menu.setApplicationMenu(mainMenu);
 
     mainWindow.loadFile(path.join (__dirname,'./renderer/index.html'));
 }
@@ -46,6 +47,14 @@ function createAboutWindow(){
 //another way : app.on('ready'...)
 app.whenReady().then(() => {
     createMainWindow();
+
+    //Implement Custom menu
+    const mainMenu= Menu.buildFromTemplate(menu);
+    Menu.setApplicationMenu(mainMenu);
+
+    mainWindow.on('closed', () => {
+        mainWindow == null
+    });
     
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -85,6 +94,44 @@ const menu = [
     }]:[])
 ]
 
+//Respond to ipcRenderer resize
+ipcMain.on('image:resize',(e,options) => {
+    options.dest=path.join(os.homedir(),'Downloads','Resized_img');
+    ResizeImg(options);
+    console.log(options);
+})
+
+//since resizeImg returns a promise we have to awit on it so have to use async await
+ async function ResizeImg({imgpath, width, height,dest}){
+    try{
+        const newPath = await resizeImg(fs.readFileSync(imgpath),{
+            width: +width,
+            height: +height, //+ converts string to number 
+        });
+
+        //Create filename //overrides of already exits
+        const filename = path.basename(imgpath);
+
+        //Create destination folder if doesn't exist
+        if(!fs.existsSync(dest)){
+            fs.mkdirSync(dest);
+        }
+
+        //Write to dest
+        fs.writeFileSync(path.join(dest,filename),newPath);
+
+        //Send sucess msg by calling the event 'image:Resized'
+        mainWindow.webContents.send('image:Resized');
+
+        //open dest folder
+        shell.openPath(dest);
+
+
+
+    }catch(error){
+        console.log(error);
+    }
+}
 
 app.on('window-all-closed', () => {
     if (!isMac) {
