@@ -12,8 +12,8 @@ function loadImage(e) {
         alertError("Please select a Image");
         return;
     }else{
-        alertSucess('sucess');
-    }
+        alertSucess('Sucessfully uploaded picture');
+    } 
 
     //displaying the hidden form
     form.style.display = 'block';

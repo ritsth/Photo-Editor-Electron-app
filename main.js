@@ -10,9 +10,10 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 let mainWindow;
 
+
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        titile: 'Photo Editor ',
+        title: 'Photo Editor',
         width: isDev? 1000: 500,
         height: 800,
         webPreferences: {
@@ -28,18 +29,34 @@ function createMainWindow() {
         mainWindow.webContents.openDevTools();
     }
 
-    mainWindow.loadFile(path.join (__dirname,'./renderer/index.html'));
+    mainWindow.loadFile(path.join (__dirname,'./renderer/main_window.html'));
 }
 
 //Create About window
 function createAboutWindow(){
     const aboutWindow = new BrowserWindow({
-        titile: 'About',
+        title: 'About',
         width: isDev? 1000: 500,
         height: 800
     });
 
     aboutWindow.loadFile(path.join (__dirname,'./renderer/about.html'));
+}
+
+//Create resize window
+function createResizeWindow(){
+    const resizeWindow = new BrowserWindow({
+        title: 'Resize Window',
+        width: isDev? 1000: 500,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
+        },
+    });
+
+    resizeWindow.loadFile(path.join (__dirname,'./renderer/resize.html'));
 }
 
 //main thing that runs the app
@@ -71,7 +88,9 @@ const menu = [
             label: 'About',
             click: createAboutWindow,
             // accelerator: 'CmdOrCtrl+W'
-        }]
+        },
+
+    ]
 
     }]:[]),
     {   
@@ -90,8 +109,20 @@ const menu = [
             label: 'About',
             click: createAboutWindow,
 
-        }]
-    }]:[])
+        },]
+    }]:[]),
+    {
+        //In the menu 
+        label: 'Edit',
+        submenu: [{
+            label: 'Resize',
+            click: createResizeWindow,
+            // accelerator: 'CmdOrCtrl+W' 
+        },
+        
+    ]        
+    }
+    
 ]
 
 //Respond to ipcRenderer resize
