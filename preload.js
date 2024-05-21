@@ -1,8 +1,10 @@
 const os = require('os');
 const path = require('path');
+const { spawn } = require('child_process');
 const { contextBridge, ipcRenderer} = require('electron');
 const Toastify = require('toastify-js');
 const { channel } = require('diagnostics_channel');
+const pythonProcess = spawn('python', ['script.py']);
 
 //exposing to renderer js files
 
@@ -25,3 +27,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     send: (channel,data) => ipcRenderer.send(channel,data),
     on: (channel,func) => ipcRenderer.on(channel,(event, ...args)=> func(...args)),
 });
+
+// contextBridge.exposeInMainWorld('pythonProcess', {
+//   send: (channel,data) => ipcRenderer.send(channel,data),
+//   on: (channel,func) => ipcRenderer.on(channel,(event, ...args)=> func(...args)),
+// });

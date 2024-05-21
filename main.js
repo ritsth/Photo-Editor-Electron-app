@@ -1,6 +1,7 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const { spawn } = require('child_process');
 const resizeImg = require('resize-img')
 const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron');
 
@@ -56,6 +57,8 @@ function createResizeWindow(){
         },
     });
 
+    resizeWindow.webContents.openDevTools();
+
     resizeWindow.loadFile(path.join (__dirname,'./renderer/resize.html'));
 }
 
@@ -72,12 +75,24 @@ app.whenReady().then(() => {
     mainWindow.on('closed', () => {
         mainWindow == null
     });
-    
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
           createMainWindow();
+          
         }
     });
+
+    const pythonProcess = spawn('python', ['script.py']);
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`Python script output: ${data}`);
+        mainWindow.webContents.send('s',data);
+    });
+    pythonProcess.on('close', (code) => {
+    console.log(`Python script exited with code ${code}`);
+    }); 
+ 
+
 })
 
 //Menu template (customizing menu)
@@ -129,7 +144,7 @@ const menu = [
 ipcMain.on('image:resize',(e,options) => {
     options.dest=path.join(os.homedir(),'Downloads','Resized_img');
     ResizeImg(options);
-    console.log(options);
+
 })
 
 //since resizeImg returns a promise we have to awit on it so have to use async await

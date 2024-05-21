@@ -13,4 +13,14 @@ $(document).ready(function(){
       $("#slider-label").text(this.value);
     });
 
+    $("#img").on('change',function(e){
+      console.log(e.target.files[0]);
+      const path = e.target.files[0].path;
+      $("#img-canvas").value(e.target.files[0]);
+    });
+
+    ipcRenderer.on('s', () =>{
+      console.log('Image resized sucessfully');
+  });
+
   });

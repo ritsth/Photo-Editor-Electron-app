@@ -22,13 +22,21 @@
         <h1>Croping</h1>
         <div class="">
           <span id="slider-label" style="display: inline-block; ">0</span>
-          <input type="range" class="form-range" min="-10" max="10" step="0.01" id="slider" name="slider">
+          <input type="range" class="form-range" min="-10" max="10" step="0.05" id="slider" name="slider">
           <div class="d-flex justify-content-between">
             <span class="text-right mt-1">-10</span>
             <span class="text-right mt-1">10</span>
           </div>
         </div>
 
+        <div>
+          <div class="p-2" style="width: 50%;">
+            <label for="img" class="form-label ">Select Image to resize</label>
+            <input class="form-control mb-2" type="file" id="img" >        
+          </div>      
+          <span id="s"></span>
+          <img src="" class="img-fluid" alt="image" id="img-canvas" value="..">
+        </div>
     </div>
    
 

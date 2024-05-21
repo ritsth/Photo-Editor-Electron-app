@@ -5,14 +5,18 @@
   "description": "Photo editor electron desktop app",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . python-electron-app --platform=win32 --arch=x64 --out=dist"
   },
   "author": "Ritika Shrestha",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^5.3.3",
-    "electron": "^30.0.6",
     "resize-img": "^2.0.0",
     "toastify-js": "^1.12.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.6",
+    "electron-packager": "^17.1.2"
   }
 }
