@@ -131,6 +131,20 @@ const menu = [
 ]
 
 //Respond to ipcRenderer resize
+ipcMain.on('image:save',(e,options) => {
+    // console.log(options.dataURL);
+    const dest = path.join(os.homedir(),'Downloads',options.filename_input);
+    //Write to dest
+    const base64Data = options.dataURL.replace(/^data:image\/png;base64,/, "");
+    fs.writeFileSync(dest,base64Data,'base64');
+
+    //open dest folder
+    shell.openPath(dest);
+
+
+})
+
+//Respond to ipcRenderer resize
 ipcMain.on('image:resize',(e,options) => {
     options.dest=path.join(os.homedir(),'Downloads','Resized_img');
     ResizeImg(options);
@@ -144,7 +158,7 @@ ipcMain.on('image:resize',(e,options) => {
             width: +width,
             height: +height, //+ converts string to number 
         });
-
+        console.log(newPath);
         //Create filename //overrides of already exits
         const filename = path.basename(imgpath);
 
