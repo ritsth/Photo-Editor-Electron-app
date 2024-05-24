@@ -21,14 +21,6 @@
     
     <div class="p-3">
         <h1>Croping</h1>
-        <div class="toolbar-tem">
-          <span id="slider-label" style="display: inline-block; ">0</span>
-          <input type="range" class="form-range" min="-5" max="5" step="0.0001" id="slider" name="slider">
-          <div class="d-flex justify-content-between">
-            <span class="text-right mt-1">-5</span>
-            <span class="text-right mt-1">5</span>
-          </div>
-        </div>
 
         <div>
           <div class="p-2" style="width: 50%;">
@@ -36,6 +28,16 @@
             <input class="form-control mb-2" type="file" id="img-selector" >        
           </div>      
           <span id="s"></span>
+        </div>    
+        
+        
+        <div class="">
+          <span id="slider-label" style="display: inline-block; ">0</span>
+          <input type="range" class="form-range" min="0" max="5" step="0.1" id="slider" name="slider">
+          <div class="d-flex justify-content-between">
+            <span class="text-right mt-1">-5</span>
+            <span class="text-right mt-1">5</span>
+          </div>
         </div>
     </div>
    
@@ -51,6 +53,7 @@
 
         </canvas>     
         <button type="button" id="save" class="btn btn-primary">Save</button>
+        <canvas id="canvas2"></canvas>
     </div>
 
 </body>
