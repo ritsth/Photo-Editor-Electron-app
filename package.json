@@ -6,12 +6,15 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager . python-electron-app --platform=win32 --arch=x64 --out=dist"
+    "package": "electron-packager . python-electron-app --platform=win32 --arch=x64 --out=dist",
+    "test": "jest --watchAll --verbose"
   },
   "author": "Ritika Shrestha",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^29.5.12",
     "bootstrap": "^5.3.3",
+    "jest": "^29.7.0",
     "resize-img": "^2.0.0",
     "toastify-js": "^1.12.0"
   },
